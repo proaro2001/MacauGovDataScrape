@@ -20,10 +20,12 @@ class DataExtractor:
         return data
 
     def setAPI(self):
+        self.api.clear()
         for i in self.data:
             self.api.append(i["目録API"])
 
     def getAPI(self):
+        self.setAPI()
         return self.api
 
     # sorting methods
