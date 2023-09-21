@@ -1,26 +1,93 @@
 """
-This file is used to crawl the datasets from the https://data.gov.mo/Datasets
-It looks for the title, publisher, last update time, file type, tags, and the
-link to access the page of the dataset.
-
-This crawler will not crawl the datasets but only gather a list of datasets.
+This py file extracts the api links from the data.csv file and stores it in the class variable apiLinks.
 """
+import csv
 
-import requests
-from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
 
-URL = "https://data.gov.mo/Datasets"
-ua = UserAgent()
-headers = {"User-Agent": ua.random}
-response = requests.get(URL, headers=headers)
+class DataExtractor:
+    def __init__(self, file="data.csv") -> None:
+        self.file = file
+        self.data = self.setData(file=self.file)
+        self.api = []
 
-if response.status_code == 200:
-    soup = BeautifulSoup(response.text, "lxml")
+    def getFileName(self):
+        return self.fileName
 
-    #links_download
-    next_page = soup.find("a", id="links_download")
-    print(next_page)
-    
-else:
-    print("Error occurred! Status code: ", response.status_code)
+    def setData(self, file="data.csv"):
+        with open(file, encoding="utf-8-sig") as csvfile:
+            reader = csv.DictReader(csvfile)
+            data = [row for row in reader]
+        return data
+
+    def setAPI(self):
+        for i in self.data:
+            self.api.append(i["目録API"])
+
+    def getAPI(self):
+        return self.api
+
+    # sorting methods
+    def merge_sort(self, data, determine="數據集編號"):
+        if len(data) <= 1:
+            return data
+
+        mid = len(data) // 2
+        left = data[:mid]  # [0, mid)
+        right = data[mid:]  # [mid, end)
+
+        left_sorted = self.merge_sort(left)
+        right_sorted = self.merge_sort(right)
+
+        return self.merge(left=left_sorted, right=right_sorted, determine=determine)
+
+    def merge(self, left, right, determine="數據集編號"):
+        merged = []  # sorted list to be returned
+
+        # index to indicate current position of each list
+        left_index = 0
+        right_index = 0
+
+        while left_index < len(left) and right_index < len(right):
+            if left[left_index][determine] <= right[right_index][determine]:
+                merged.append(left[left_index])
+                left_index += 1
+            else:
+                merged.append(right[right_index])
+                right_index += 1
+
+        while left_index < len(left):
+            merged.append(left[left_index])
+            left_index += 1
+
+        while right_index < len(right):
+            merged.append(right[right_index])
+            right_index += 1
+
+        return merged
+
+    def quick_sort(self, data, determine="數據集編號"):
+        if len(data) <= 1:
+            return data
+
+        pivot = len(data) // 2  # use // to get integer instead of float
+        left = [x for x in data if x[determine] < data[pivot][determine]]
+        middle = [x for x in data if x[determine] == data[pivot][determine]]
+        right = [x for x in data if x[determine] > data[pivot][determine]]
+
+        return (
+            self.quick_sort(data=left, determine=determine)
+            + middle
+            + self.quick_sort(data=right, determine=determine)
+        )
+
+    def sort_by(self, determine="數據集編號", method="merge"):
+        if method == "quick":
+            self.data = self.quick_sort(self.data, determine=determine)
+        elif method == "merge":
+            self.data = self.merge_sort(self.data, determine=determine)
+        else:
+            self.log("wrong method")
+
+    def printDataBy(self, determine="數據集編號"):
+        for i in self.data:
+            print(i[determine])
