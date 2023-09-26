@@ -8,28 +8,32 @@ import csv
 class DataExtractor:
     def __init__(self, file="data.csv") -> None:
         self.file = file
-        self.data = self.setData(file=self.file)
-        self.api = []
+        self.data = []
+        self.api = []  # store api links
+        self.initData(file)
+        self.intiAPI()
 
-    def getFileName(self):
-        return self.fileName
-
-    def setData(self, file="data.csv"):
+    # Declaring private method
+    def initData(self, file="data.csv"):
         with open(file, encoding="utf-8-sig") as csvfile:
             reader = csv.DictReader(csvfile)
             data = [row for row in reader]
-        return data
+        self.data = data
 
-    def setAPI(self):
+    # Declaring private method
+    def intiAPI(self):
         self.api.clear()
         for i in self.data:
             self.api.append(i["目録API"])
 
+    def getData(self):
+        return self.data
+
     def getAPI(self):
-        self.setAPI()
+        self.intiAPI()
         return self.api
 
-    # sorting methods
+    # Declaring private method
     def merge_sort(self, data, determine="數據集編號"):
         if len(data) <= 1:
             return data
@@ -43,6 +47,7 @@ class DataExtractor:
 
         return self.merge(left=left_sorted, right=right_sorted, determine=determine)
 
+    # Declaring private method
     def merge(self, left, right, determine="數據集編號"):
         merged = []  # sorted list to be returned
 
@@ -68,6 +73,7 @@ class DataExtractor:
 
         return merged
 
+    # Declaring private method
     def quick_sort(self, data, determine="數據集編號"):
         if len(data) <= 1:
             return data
