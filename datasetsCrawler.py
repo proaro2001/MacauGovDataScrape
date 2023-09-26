@@ -1,5 +1,6 @@
 """
-This py file extracts the api links from the data.csv file and stores it in the class variable apiLinks.
+This py file extracts the api links from the data.csv file 
+and stores it in the class variable apiLinks.
 """
 import csv
 
