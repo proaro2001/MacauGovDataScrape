@@ -8,6 +8,9 @@ import requests
 import csv
 from datetime import date, datetime
 import json
+import csv
+import os
+from urllib.parse import urlparse
 
 
 class MacauGovOpenSource:
@@ -15,47 +18,17 @@ class MacauGovOpenSource:
         self.API_URL = API_URL
         self.authorization = "APPCODE 09d43a591fba407fb862412970667de4"
         self.headers = {"Authorization": self.authorization}
-        self.response = None
-        self.soup = None
-        self.data = None
+        self.response = requests.get(self.API_URL, headers=self.headers)
 
-    # setters
-    def setResponse(self, response):
-        self.response = response
+    def downloadFile(self):
+        # This function downloads file from the API_URL
+        # and save it to the current directory
+        # This function will encounter the following data type:
+        # csv, json, xml, xlsx, xls, rdf
 
-    def setAPI_URL(self, API_URL):
-        self.API_URL = API_URL
-
-    def setAuthorization(self, authorization):
-        self.authorization = authorization
-
-    def setHeaders(self, headers):
-        self.headers = headers
-
-    def setSoup(self, soup):
-        self.soup = soup
-
-    def setData(self, data):
-        self.data = data
-
-    # getters
-    def getResponse(self):
-        return self.response
-
-    def getAPI_URL(self):
-        return self.API_URL
-
-    def getAuthorization(self):
-        return self.authorization
-
-    def getHeaders(self):
-        return self.headers
-
-    def getSoup(self):
-        return self.soup
-
-    def getData(self):
-        return self.data
+        content_type = self.response.headers["Content-Type"]
+        with open("\data" + content_type, "wb") as file:
+            file.write(self.response.content)
 
     # Turn json file to csv file
     def jsonToCsv(self, jsonFile, csvFile=date.today().strftime("%Y-%m-%d") + ".csv"):

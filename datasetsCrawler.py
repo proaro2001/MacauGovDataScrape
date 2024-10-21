@@ -34,7 +34,7 @@ class DataExtractor:
         return self.api
 
     # Declaring private method
-    def merge_sort(self, data, determine="數據集編號"):
+    def merge_sort(self, data, determine="數據格式"):
         if len(data) <= 1:
             return data
 
@@ -48,7 +48,7 @@ class DataExtractor:
         return self.merge(left=left_sorted, right=right_sorted, determine=determine)
 
     # Declaring private method
-    def merge(self, left, right, determine="數據集編號"):
+    def merge(self, left, right, determine="數據格式"):
         merged = []  # sorted list to be returned
 
         # index to indicate current position of each list
@@ -74,7 +74,7 @@ class DataExtractor:
         return merged
 
     # Declaring private method
-    def quick_sort(self, data, determine="數據集編號"):
+    def quick_sort(self, data, determine="數據格式"):
         if len(data) <= 1:
             return data
 
@@ -89,7 +89,7 @@ class DataExtractor:
             + self.quick_sort(data=right, determine=determine)
         )
 
-    def sort_by(self, determine="數據集編號", method="merge"):
+    def sort_by(self, determine="數據格式", method="merge"):
         if method == "quick":
             self.data = self.quick_sort(self.data, determine=determine)
         elif method == "merge":
@@ -97,6 +97,6 @@ class DataExtractor:
         else:
             self.log("wrong method")
 
-    def printDataBy(self, determine="數據集編號"):
+    def printDataBy(self, determine="數據格式"):
         for i in self.data:
             print(i[determine])
